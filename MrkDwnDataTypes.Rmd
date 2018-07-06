@@ -1,0 +1,100 @@
+---
+title: "MrkDwnDatatypes"
+author: "Smera Gora"
+date: "July 6, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+#datatype.R
+#numerical
+#this is a dbl_var
+a<-c(4.3,2.5,2,3.2,2.5,3.4)
+#adding an L specifies intigers
+b<-c(4L,2L,1L,10L,32L,11L)
+# you can change types
+num<-as.numeric(b)
+#typeof function gives back the type
+typea<-typeof(a)
+typeb<-typeof(b)
+#you can round numbers up or down based on commands
+roundup<-ceiling(a)
+rounddown<-floor(a)
+# I can also compare vectors
+c<-c(1,2,3,4,5)
+d<-c(1,6,7,8,5)
+#is c the same as d, you need the same number of numbers
+c==d
+# you can do this with < less than, > greater than, <= less than or equal, >= greater of equal
+c>=d
+# i can also check if the sets are identical
+identical(c,d)
+#you can have seqences and have them go up by intervals
+seq<-seq(from=20, to=50, by=5)
+#you can also make sequeces that have a specified length using length out
+seq1<-seq(from=2, to=100, length.out=5)
+#, you don't to from and t
+seq2<-seq(2,100, length.out=5)
+#there are also repeated sequences: each and times. They place the numbers differently though
+#if you want #s next to eachother use each
+seq3<-rep(1:6, each = 3)
+#vs times
+seq3<-rep(1:6, times = 3)
+#runif is a random number generator
+randnum<-runif(10)
+hist(randnum)
+# to create a more unifromed graph increase the number
+randnum1<-runif(100000)
+hist(randnum1)
+#when generating random numbers not everyone gets the same results like they do in sequences
+# you can also specify parameters incase you want to take a SRS with a definite number 
+randnum2<-runif(100, min = 0, max = 10000)
+#in Statistics there can be sampling with or without replacement
+#without, you get unique numbers
+sample(0:100, 12, replace = FALSE)
+#with: you can get repeating numbers
+sample(0:100, 12, replace = FALSE)
+#normal curves are used and is a condition for many test, it has a stn.dev of 1 and a mean at the center of 0
+#using this I generalted random z scores
+rnorm(12, mean = 0, sd = 1)
+#setting the seed will give you the same results every time
+set.seed(1100)
+rnorm(n = 10, mean = 0, sd = 1)
+
+
+
+#character
+#in vectors if characters are combined with numerical value each elements is treated as a string
+string<-c("j","k","l",0,9,8)
+string1<-c("p","q","r",6,9,8)
+#now there are quotes around the numbers too 
+# you can also combine string and you can seperate them using the sep function
+paste(string,string1, sep="A")
+#you can ask if the string is a character type using #is.character and you can change it using as.character
+v<-c(4,3,4,4,5)
+as.character(v)
+# now they all have quotes
+# i can again get rid of the quotes
+print(v, quotes=false)
+#I can find the length by using the function length
+# If everything is under 1 quote it is considered as there is only one element 
+length(string1)
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
