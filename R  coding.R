@@ -25,6 +25,48 @@ temp = theDF[,"first", drop=FALSE]
 
 
 
+
+
+
+
+rm(Data.USA...Bar.Chart.of.Acceptance.Rate.for.Massachusetts.Institute.of.Technology)
+
+#df<-plyr::join(USASAT, AcceptanceData, by="university_name", type="left", match="first")
+rm(SATUSA)
+
+dim(DF)
+dim(AcceptanceData)
+dim(USASAT)
+#DF<-dplyr::left_join(USASAT, AcceptanceData, by=c("university_name","year"))
+DF<-cbind(USASAT,AcceptanceData)
+library(plyr)
+#result<-subset(DF,(DF$sat_math_75))
+DF<-DF[,-(8:10)]
+DF$combinedSAT<-as.numeric(DF$sat_math_75)+as.numeric(DF$sat_cr_75)
+DF$acceptancerate<-as.numeric(DF$admissions_total)/as.numeric(DF$applicants_total)
+
+
+
+#combine SAT Score and acceptance rate
+#analize High Scores and least accpetence
+
+
+# for every university 
+#sat_math_75+satcr_75 gives desired SAT score for each college.
+  #Column5+ column7
+
+#temp<-DF$sat_math_75+DF$sat_cr_75
+
+
+
+
+
+
+
+
+
+
+
 matrix<-matrix(1:6, nrow=2)
 matrix[1,1]<-10
 #if you add a letter in a number matrix it will change it to script
