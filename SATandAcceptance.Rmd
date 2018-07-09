@@ -1,0 +1,120 @@
+---
+title: "comparision of  SAT and acceptance rate"
+author: "Smera Gora"
+date: "July 9, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+library(plyr)
+#open both csv files, and make sure they are not strings and the heading is on.
+#use cbind to combine both data frames 
+SATvsAcceptance<-cbind(SATUSA,AcceptanceData)
+
+#After using cbind a few columns repeat, so subtract them off 
+SATvsAcceptance<-SATvsAcceptance[,-(8:10)]
+
+#because your numbers are read as scripts used the function as numerical so they can be read as numerical
+#add the 75th percentiles of both cr and math to get the desired SAT score. This vector will become a new column
+SATvsAcceptance$TotalSAT75<-as.numeric(SATvsAcceptance$sat_math_75)+as.numeric(SATvsAcceptance$sat_cr_75)
+
+#to find the acceptance make sure the computer reads your number as numercal, so use the as.numerical function again.
+#after do 100(addmited / applies) to get the acceptance rate and create a new vector that will be a new column. 
+SATvsAcceptance$acceptancerate<-100*(as.numeric(SATvsAcceptance$admissions_total)/as.numeric(SATvsAcceptance$applicants_total))
+
+#next I seperated the data by years. To find how many years they are and what they are I used the unique function.
+#I subsetted them and created 1 new data frame for each year.
+unique(SATvsAcceptance$year)
+SAT_2014<-subset(SATvsAcceptance, SATvsAcceptance$year==2014)
+SAT_2015<-subset(SATvsAcceptance, SATvsAcceptance$year==2015)
+SAT_2016<-subset(SATvsAcceptance, SATvsAcceptance$year==2016)
+
+# I found the correleation for each year after plotting them. The correlation was on the weaker side. 
+# When looking at the plot you can see there are two different trends. There is almost no trend from 200 to 1350.They were all around -.4
+#There is a negetive correlation trend seen at 1350 to 1600. 
+plot(SAT_2014$TotalSAT75,SAT_2014$acceptancerate,xlab ="SAT at 75th percentile", ylab="Acceptance Rates ", main= "2014 Total Data")
+result_2014<-cor(as.numeric(SAT_2014$TotalSAT75), as.numeric(SAT_2014$acceptancerate), use="complete.obs")
+  method = c("pearson")
+  
+  
+plot(SAT_2015$TotalSAT75,SAT_2015$acceptancerate, xlab ="SAT at 75th percentile", ylab="Acceptance Rates ", main= "2015 Total Data")
+result_2015<-cor(as.numeric(SAT_2015$TotalSAT75), as.numeric(SAT_2015$acceptancerate), use="complete.obs")
+method = c("pearson")
+
+
+plot(SAT_2016$TotalSAT75,SAT_2016$acceptancerate, xlab ="SAT at 75th percentile", ylab="Acceptance Rates ", main= "2016 Total Data")
+result_2016<-cor(as.numeric(SAT_2016$TotalSAT75), as.numeric(SAT_2016$acceptancerate), use="complete.obs")
+method = c("pearson")
+ 
+
+# because there was a new trend seen at 1350 to 1600, I further subsetted the scores by 1350 and higher. 
+# And I recalculated the correlation which was stronger. They went to to about -.735
+SAT2014for1350<-subset(SAT_2014, SAT_2014$TotalSAT75>1350)
+above1350for14<-cor(as.numeric(SAT2014for1350$TotalSAT75), as.numeric(SAT2014for1350$acceptancerate), use="complete.obs")
+method = c("pearson")
+
+
+SAT2015for1350<-subset(SAT_2015, SAT_2015$TotalSAT75>1350)
+above1350for15<-cor(as.numeric(SAT2015for1350$TotalSAT75), as.numeric(SAT2015for1350$acceptancerate), use="complete.obs")
+method = c("pearson")
+
+
+SAT2016for1350<-subset(SAT_2016, SAT_2016$TotalSAT75>1350)
+plot(SAT2014for1350$TotalSAT75,SAT2014for1350$acceptancerate, xlab ="75th percentile SAT only above 1350", ylab="Acceptance Rates in percents", main= "2014 Data")
+above1350for16<-cor(as.numeric(SAT2016for1350$TotalSAT75), as.numeric(SAT2016for1350$acceptancerate), use="complete.obs")
+  method = c("pearson")
+abline(lm(SAT2014for1350$acceptancerate~SAT2014for1350$TotalSAT75),col="green")
+
+
+
+
+plot(SAT2015for1350$TotalSAT75,SAT2015for1350$acceptancerate, xlab ="75th percentile SAT only above 1350", ylab="Acceptance Rates in percents", main= "2015 Data")
+lm(SAT2015for1350$TotalSAT75~SAT2015for1350$acceptancerate)
+abline(lm(SAT2015for1350$acceptancerate~SAT2015for1350$TotalSAT75),col="red")
+
+
+plot(SAT2016for1350$TotalSAT75,SAT2016for1350$acceptancerate, xlab ="75th percentile SAT only above 1350", ylab="Acceptance Rates in percents", main= "2016 Data")
+lm(SAT2016for1350$TotalSAT75~SAT2016for1350$acceptancerate)
+abline(lm(SAT2015for1350$acceptancerate~SAT2015for1350$TotalSAT75),col="purple")
+
+
+#going back to the very first data frame I made, I am looking at all the unique colleges to find the average SAT and the 75 perctile and the average acceptance rate.
+#by finding the unique college names we see how many times the loop function has to implement
+u<-as.character(unique(SATvsAcceptance$university_name))
+#empty data frame so we can later add university name, average SAT", average Acceptance Rate
+answer<-matrix(0, nrow = length(u), ncol=3)
+answer<-data.frame(answer)
+colnames(answer)<-c("university name", "average SAT", "Ave Acceptance Rate")
+#for loop is used to go through every college. The index is added by one wo it can keep going to the next college
+#x starts at one so that the first college is started with. It is the starting point. 
+x=1
+for(i in 1:length(u)){
+  temp<-subset(SATvsAcceptance, SATvsAcceptance$university_name ==u[i])
+  answer$`university name`[x]<-u[i]
+  answer$`average SAT`[x]<-mean(temp$TotalSAT75)
+  answer$`Ave Acceptance Rate`[x]<-mean(temp$acceptancerate)
+  x<-x+1
+  
+}
+
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
