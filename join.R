@@ -20,6 +20,9 @@ GHI<-dplyr::semi_join(D1,D2, by="letter1")
 JKL<-dplyr::full_join(D1,D2, by="letter1")
 #keeps only rows that are the same
 MNO<-merge(D1, D2, by="letter1", sort = TRUE)
+#selects a certain column 
+select<-D1%>% select(starts_with("letter1"))
+
 
 
 
